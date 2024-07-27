@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Data;
 using backend.Models;
-using System.Collections.Generic;
 
-namespace MyProject.Controllers
+namespace backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

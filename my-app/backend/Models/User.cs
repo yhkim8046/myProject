@@ -5,7 +5,6 @@ namespace backend.Models
         private string _id;
         private string _username;
         private string _password;
-        private string _email;
 
         public string Id
         {
@@ -25,18 +24,11 @@ namespace backend.Models
             set => _password = value;
         }
 
-        public string Email
-        {
-            get => _email;
-            set => _email = value;
-        }
-
-         public User(string id, string username, string password, string email)
+        public User(string id, string username, string password)
         {
             _id = id;
             _username = username;
             _password = password;
-            _email = email;
         }
 
         public User() { }
