@@ -50,7 +50,7 @@ const Posting: React.FC = () => {
                 </div>
                 <div className="button-container">
                     <Button variant="outlined">More...</Button>
-                    <Button variant="outlined" onClick={handleShareClick}>Share</Button>
+                    <Button variant="outlined" onClick={handleShareClick}>Post</Button>
                 </div>
             </div>
         </div>

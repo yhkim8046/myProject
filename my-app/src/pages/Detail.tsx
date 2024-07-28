@@ -1,5 +1,7 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import '../styles/Detail.css';
 
 const Detail: React.FC = () => {
     const location = useLocation();
@@ -11,16 +13,32 @@ const Detail: React.FC = () => {
         content: string
     };
 
+    const navigate = useNavigate();
+
+    const handleShareClick = () => {
+        navigate('/Feedback');
+    };
+
     return (
-        <div>
-            <h1>Detail Page</h1>
-            <h2>Title: {title}</h2>
-            <p>Content: {content}</p>
-            <p>ID: {id}</p>
-            <p>Date: {date}</p>
-            <p>Time: {time}</p>
+        <div className="container">
+            <div className="header">
+                <h1>Diary on {date}</h1>
+            </div>
+            <div className="titleContainer">
+                <h2 className="titleText">Title: {title}</h2>
+            </div>
+            <div className="contentContainer">
+                <p className="contentText">Content: {content}</p>
+                <p className="contentText">ID: {id}</p>
+                <p className="contentText">Date: {date}</p>
+                <p className="contentText">Time: {time}</p>
+            </div>
+            <div className="timeContainer">
+                <p className="timeText">Time: {time}</p>
+            </div>
+            <Button variant="outlined" onClick={handleShareClick}>Motivate</Button>
         </div>
     );
 }
 
-export default Detail; 
+export default Detail;
