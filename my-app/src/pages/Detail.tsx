@@ -1,9 +1,10 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import '../styles/Detail.css';
 
-const Detail: React.FC = () => {
+const Detail = () => {
     const location = useLocation();
     const { id, date, time, title, content } = location.state as {
         id: number,
@@ -14,28 +15,39 @@ const Detail: React.FC = () => {
     };
 
     const navigate = useNavigate();
+    const [contentSize, setContentSize] = useState('');
 
     const handleShareClick = () => {
         navigate('/Feedback');
     };
 
+    const handleContentChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
+        setContentSize(e.target.value);
+    };
+
     return (
         <div className="container">
             <div className="header">
-                <h1>Diary on {date}</h1>
+                <h1>Diary on {date} {time}</h1>
             </div>
             <div className="titleContainer">
                 <h2 className="titleText">Title: {title}</h2>
             </div>
-            <div className="contentContainer">
-                <p className="contentText">Content: {content}</p>
-                <p className="contentText">ID: {id}</p>
-                <p className="contentText">Date: {date}</p>
-                <p className="contentText">Time: {time}</p>
+            <hr />
+            <div className="contentContainer" style={{
+                height: content ? `${Math.min(90, 20 + content.length / 5)}%` : 'auto'
+            }}>
+                <label htmlFor="content"></label>
+                <textarea
+                    id="content"
+                    name="content"
+                    className="contentText"
+                    value={content}
+                    onChange={handleContentChange}
+                    style={{ height: '100%', width: '100%', border: 'none', padding: '0' }}
+                />
             </div>
-            <div className="timeContainer">
-                <p className="timeText">Time: {time}</p>
-            </div>
+            <hr />
             <Button variant="outlined" onClick={handleShareClick}>Motivate</Button>
         </div>
     );
