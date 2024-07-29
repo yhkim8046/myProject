@@ -35,7 +35,7 @@ const Detail = () => {
             </div>
             <hr />
             <div className="contentContainer" style={{
-                height: content ? `${Math.min(90, 20 + content.length / 5)}%` : 'auto'
+                height: content ? `${Math.min(60, 20 + content.length / 5)}%` : 'auto'
             }}>
                 <label htmlFor="content"></label>
                 <textarea
