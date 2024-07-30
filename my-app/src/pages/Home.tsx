@@ -48,7 +48,7 @@ const Home = () => {
                     <Button variant="outlined" className="login-btn" onClick={handleLoginClick}>Sign in</Button>
                 </div>
                 <div className="login-links">
-                    <Link to="/signup">Sign up</Link>
+                    <Link to="/Signup">Sign up</Link>
                 </div>
             </div>
         </div>
