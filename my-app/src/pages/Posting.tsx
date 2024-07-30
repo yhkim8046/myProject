@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Posting.css';
+import styles from '../styles/Posting.module.css';
 import Button from '@mui/material/Button';
 
 const Posting: React.FC = () => {
 
     const navigate = useNavigate();
+    //const [userName, setUserName] = useState('');
+    const userName = 'Sam';
+
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -29,28 +32,33 @@ const Posting: React.FC = () => {
         
         navigate('/detail', {state:diary});
     };
-
+    //line 42 need to confirm what was the input-container
     return (
-        <div className="app">
-            <div className="container">
-                <div className="input-container">
+        <div className={styles.app}>
+            <div className={styles.container}>
+                <div className={styles.greeting}>
+                    <h1>How was your day {userName}?</h1>
+                </div>
+                <div>
                     <input
                         type="text"
                         placeholder="title"
-                        className="title"
+                        className={styles.title}
                         value={title}
                         onChange={handleTitleChange}
                     />
+                    <hr/>
                     <textarea
                         placeholder="share your day"
-                        className="content"
+                        className={styles.content}
                         value={content}
                         onChange={handleContentChange}
                     ></textarea>
                 </div>
-                <div className="button-container">
+                <hr/>
+                <div className={styles.buttonContainer}>
                     <Button variant="outlined">More...</Button>
-                    <Button variant="outlined" onClick={handleShareClick}>Share</Button>
+                    <Button variant="outlined" onClick={handleShareClick}>Post</Button>
                 </div>
             </div>
         </div>
