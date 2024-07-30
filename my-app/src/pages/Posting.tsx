@@ -6,6 +6,9 @@ import Button from '@mui/material/Button';
 const Posting: React.FC = () => {
 
     const navigate = useNavigate();
+    //const [userName, setUserName] = useState('');
+    const userName = 'Sam';
+
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
@@ -33,6 +36,9 @@ const Posting: React.FC = () => {
     return (
         <div className="app">
             <div className="container">
+                <div className='greeting'>
+                    <h1>How was your day {userName}?</h1>
+                </div>
                 <div className="input-container">
                     <input
                         type="text"
@@ -50,7 +56,7 @@ const Posting: React.FC = () => {
                 </div>
                 <div className="button-container">
                     <Button variant="outlined">More...</Button>
-                    <Button variant="outlined" onClick={handleShareClick}>Share</Button>
+                    <Button variant="outlined" onClick={handleShareClick}>Post</Button>
                 </div>
             </div>
         </div>

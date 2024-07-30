@@ -1,51 +1,104 @@
-/* Posting 페이지에 대한 추가 CSS 스타일링 */
-
 .app {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color:linen;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  background-color: white;
+}
+
+.greeting{
+  margin-bottom: 3rem; 
+  text-align: center; 
+  width: 100%;
+}
+
+.container {
+  padding: 4rem;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 70%;
+}
+
+.title {
+  width: 50%;
+  padding: 1rem;
+  margin-bottom: 3rem;
+  font-size: 1.5rem;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+
+.content {
+  width: 96%;
+  height: 25vh;
+  padding: 1rem;
+  font-size: 1.125rem;
+  border: 1px solid rgb(0, 0, 0);
+  border-radius: 5px;
+  resize: none;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.25rem;
+}
+
+.button-container button {
+  padding: 0.5rem rem;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
   .container {
-    background: whitesmoke;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 900px;
-    max-width: 100%;
+      padding: 1.5rem;
   }
-  
-  .title{
-    width: 90%;
-    padding: 10px;
-    margin-bottom: 50px;
-    font-size: 24px;
-    border: 1px solid black;
-    border-radius: 5px;
+
+  .title, .content {
+      font-size: 1.25rem;
   }
-  
-  .content{
-    width: 90%;
-    height: 300px;
-    padding: 10px;
-    font-size: 18px;
-    border: 1px solid black;
-    border-radius: 5px;
-    resize: none;
+
+  .content {
+      height: 15vh;
   }
+
   .button-container {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-    
-    .button-container Button:first-child {
-      margin-right: 10px; 
+      flex-direction: column;
+      align-items: stretch;
   }
-  
-  .button-container Button:last-child {
-      margin-right: 10px; 
+
+  .button-container button {
+      width: 100%;
+      margin-bottom: 0.5rem;
   }
 }
-  
+
+@media (max-width: 480px) {
+  .title, .content {
+      font-size: 1rem;
+  }
+
+  .content {
+      height: 12vh;
+  }
+}
+
+@media (max-width: 320px) {
+  .container {
+      padding: 1rem;
+  }
+
+  .title, .content {
+      font-size: 0.875rem;
+  }
+
+  .content {
+      height: 10vh;
+  }
+
+  .button-container button {
+      width: 100%;
+      margin-bottom: 0.5rem;
+  }
+}
