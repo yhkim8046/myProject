@@ -1,10 +1,10 @@
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
-import '../styles/Home.css';
+import styles from '../styles/Home.module.css';
 
 const Home = () => {
-    const [userName, setUsername] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
     const handleUsernameChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -18,36 +18,36 @@ const Home = () => {
     const handleLoginClick = () => {
         navigate('/Posting');
 
-        console.log('Username:', userName);
+        console.log('Username:', username);
         console.log('Password:', password);
     };
 
     const navigate = useNavigate();
 
     return (
-        <div className="login-page">
-            <div className="login-container">
-                <h2 className="login-title">Sign in</h2>
-                <div className="login-input-container">
+        <div className={styles.loginPage}>
+            <div className={styles.loginContainer}>
+                <h2 className={styles.loginTitle}>Sign in</h2>
+                <div className={styles.loginInputContainer}>
                     <input
                         type="text"
                         placeholder="ID"
-                        value={userName}
+                        value={username}
                         onChange={handleUsernameChange}
-                        className="login-input"
+                        className={styles.loginInput}
                     />
                     <input
                         type="password"
                         placeholder="password"
                         value={password}
                         onChange={handlePasswordChange}
-                        className="login-input"
+                        className={styles.loginInput}
                     />
                 </div>
-                <div className="login-options">
-                    <Button variant="outlined" className="login-btn" onClick={handleLoginClick}>Sign in</Button>
+                <div className={styles.loginOptions}>
+                    <Button variant="outlined" className={styles.loginBtn} onClick={handleLoginClick}>Sign in</Button>
                 </div>
-                <div className="login-links">
+                <div className={styles.loginLinks}>
                     <Link to="/Signup">Sign up</Link>
                 </div>
             </div>

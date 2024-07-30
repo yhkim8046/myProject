@@ -1,9 +1,9 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import '../styles/Signup.css';
+import styles from '../styles/Signup.module.css';
 import Button from '@mui/material/Button';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function Signup() {
     const navigate = useNavigate();
@@ -21,8 +21,8 @@ export default function Signup() {
             noValidate
             autoComplete="off"
         >
-            <div className="container">
-                <div className="form-container">
+            <div className={styles.container}>
+                <div className={styles.formContainer}>
                     <TextField
                         required
                         id="userId"
@@ -33,7 +33,7 @@ export default function Signup() {
                     <TextField
                         required
                         id="password"
-                        label="password"
+                        label="Password"
                         type="password"
                         variant="outlined"
                         fullWidth
@@ -46,11 +46,12 @@ export default function Signup() {
                         variant="outlined"
                         fullWidth
                     />
-                    <Button onClick={handleSignUpClick}
+                    <Button
+                        onClick={handleSignUpClick}
                         variant="contained"
                         color="primary"
                         fullWidth
-                        className="signup-button"
+                        className={styles.signupButton}
                     >
                         Sign Up
                     </Button>
