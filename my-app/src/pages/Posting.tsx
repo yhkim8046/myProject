@@ -47,6 +47,7 @@ const Posting: React.FC = () => {
                         value={title}
                         onChange={handleTitleChange}
                     />
+                    <hr/>
                     <textarea
                         placeholder="share your day"
                         className="content"
@@ -54,6 +55,7 @@ const Posting: React.FC = () => {
                         onChange={handleContentChange}
                     ></textarea>
                 </div>
+                <hr/>
                 <div className="button-container">
                     <Button variant="outlined">More...</Button>
                     <Button variant="outlined" onClick={handleShareClick}>Post</Button>
