@@ -1,28 +1,36 @@
-using Microsoft.Extensions.Options;
-using backend.Data;
 using backend.Models;
+using backend.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nameof(MongoDBSettings)));
-builder.Services.AddSingleton(sp => sp.GetRequiredService<IOptions<MongoDBSettings>>().Value);
-builder.Services.AddSingleton<UserService>();
+builder.Services.AddControllersWithViews();
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// CORS 설정 추가
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("Content-Disposition"); // 필요한 경우 추가 헤더 노출
+    });
+});
+
+// Register ApplicationDbContext with SQL Server
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register UserService
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyProject v1"));
-}
-else
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
@@ -30,9 +38,16 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
+
+// CORS 사용
+app.UseCors("AllowAllOrigins");
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

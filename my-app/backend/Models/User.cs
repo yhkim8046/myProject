@@ -1,14 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace backend.Models
 {
     public class User
     {
-        public string userId{get; set;}
-        public string password{get; set;}
+        [Key]
+        [MaxLength(16)]
+        public string UserId { get; set; }
 
-        public User(string userId, string password)
-        {
-            this.userId = userId;
-            this.password = password;
-        }
+        [Required]
+        [MaxLength(256)]
+        public string Password { get; set; }
     }
 }
