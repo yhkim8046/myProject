@@ -1,15 +1,63 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import styles from '../styles/Signup.module.css';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import styles from '../styles/Signup.module.css';
 
-export default function Signup() {
+const Signup = () => {
+    const [userId, setUserId] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const navigate = useNavigate();
 
-    const handleSignUpClick = () => {
-        navigate('/Home');
+    const handleUserIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserId(e.target.value);
+    };
+
+    const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(e.target.value);
+    };
+
+    const handlePasswordConfirmationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPasswordConfirmation(e.target.value);
+    };
+
+    const handleSignUpClick = async () => {
+        if (password !== passwordConfirmation) {
+            alert('Passwords do not match.');
+            return;
+        }
+
+        // 백엔드 API URL
+        const apiUrl = 'http://localhost:5182/api/users/register';
+
+        // 회원가입 요청 데이터
+        const signupData = {
+            userId: userId,
+            password: password,
+        };
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(signupData),
+            });
+
+            if (response.ok) {
+                console.log('Registration successful');
+                navigate('/Home'); // 회원가입 성공 시 리다이렉션
+            } else {
+                console.error('Registration failed');
+                alert('User already exists.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
     };
 
     return (
@@ -29,6 +77,8 @@ export default function Signup() {
                         label="ID"
                         variant="outlined"
                         fullWidth
+                        value={userId}
+                        onChange={handleUserIdChange}
                     />
                     <TextField
                         required
@@ -37,6 +87,8 @@ export default function Signup() {
                         type="password"
                         variant="outlined"
                         fullWidth
+                        value={password}
+                        onChange={handlePasswordChange}
                     />
                     <TextField
                         required
@@ -45,6 +97,8 @@ export default function Signup() {
                         type="password"
                         variant="outlined"
                         fullWidth
+                        value={passwordConfirmation}
+                        onChange={handlePasswordConfirmationChange}
                     />
                     <Button
                         onClick={handleSignUpClick}
@@ -59,4 +113,6 @@ export default function Signup() {
             </div>
         </Box>
     );
-}
+};
+
+export default Signup;

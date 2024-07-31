@@ -6,6 +6,7 @@ import styles from '../styles/Home.module.css';
 const Home = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleUsernameChange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
         setUsername(e.target.value);
@@ -15,14 +16,37 @@ const Home = () => {
         setPassword(e.target.value);
     };
 
-    const handleLoginClick = () => {
-        navigate('/Posting');
+    const handleLoginClick = async () => {
+        // 백엔드 API URL
+        const apiUrl = 'http://localhost:5182/api/users/login';
 
-        console.log('Username:', username);
-        console.log('Password:', password);
+        // 로그인 요청 데이터
+        const loginData = {
+            userId: username,
+            password: password,
+        };
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+            });
+
+            if (response.ok) {
+                console.log('Login successful');
+                navigate('/Posting'); // 로그인 성공 시 리다이렉션
+            } else {
+                console.error('Login failed');
+                alert('Invalid username or password.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        }
     };
-
-    const navigate = useNavigate();
 
     return (
         <div className={styles.loginPage}>
@@ -38,7 +62,7 @@ const Home = () => {
                     />
                     <input
                         type="password"
-                        placeholder="password"
+                        placeholder="Password"
                         value={password}
                         onChange={handlePasswordChange}
                         className={styles.loginInput}
@@ -53,6 +77,6 @@ const Home = () => {
             </div>
         </div>
     );
-}
+};
 
 export default Home;
