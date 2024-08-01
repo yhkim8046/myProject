@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Services.backend;
+using backend.Services;
 using backend.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,7 +17,6 @@ namespace backend.Controllers
             _diaryService = diaryService;
         }
 
-        // GET: api/diaries
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Diary>>> GetDiaries()
         {
@@ -25,11 +24,10 @@ namespace backend.Controllers
             return Ok(diaries);
         }
 
-        // GET: api/diaries/{DiaryId}
-        [HttpGet("{DiaryId}")]
-        public async Task<ActionResult<Diary>> GetDiary(int DiaryId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Diary>> GetDiary(int id)
         {
-            var diary = await _diaryService.FindDiaryByIdAsync(DiaryId);
+            var diary = await _diaryService.FindDiaryByIdAsync(id);
             if (diary == null)
             {
                 return NotFound();
@@ -37,22 +35,19 @@ namespace backend.Controllers
             return Ok(diary);
         }
 
-        // POST: api/diaries
         [HttpPost]
         public async Task<ActionResult<Diary>> CreateDiary([FromBody] Diary diary)
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors);
-                return BadRequest(new { Message = "Validation failed", Errors = errors });
+                return BadRequest(ModelState);
             }
 
-            var createdDiary = await _diaryService.CreateDiaryAsync(diary);
+            // Assuming the UserId is provided in the request body
+            var createdDiary = await _diaryService.CreateDiaryAsync(diary.UserId, diary);
             return CreatedAtAction(nameof(GetDiary), new { id = createdDiary.DiaryId }, createdDiary);
         }
 
-
-        // PUT: api/diaries/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateDiary(int id, [FromBody] Diary diary)
         {
@@ -75,7 +70,6 @@ namespace backend.Controllers
             return NoContent();
         }
 
-        // DELETE: api/diaries/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDiary(int id)
         {

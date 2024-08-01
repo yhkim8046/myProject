@@ -12,7 +12,7 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240801135756_InitialCreate")]
+    [Migration("20240801144232_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("backend.Models.Diary", b =>
+            modelBuilder.Entity("Diary", b =>
                 {
                     b.Property<int>("DiaryId")
                         .ValueGeneratedOnAdd()
@@ -35,7 +35,6 @@ namespace backend.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
@@ -46,10 +45,15 @@ namespace backend.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(16)");
 
                     b.HasKey("DiaryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Diaries");
                 });
@@ -68,6 +72,22 @@ namespace backend.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Diary", b =>
+                {
+                    b.HasOne("backend.Models.User", "User")
+                        .WithMany("Diaries")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("backend.Models.User", b =>
+                {
+                    b.Navigation("Diaries");
                 });
 #pragma warning restore 612, 618
         }

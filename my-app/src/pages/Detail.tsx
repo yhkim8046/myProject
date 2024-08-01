@@ -41,7 +41,7 @@ const Detail = () => {
             const response = await fetch(`/api/diaries/${DiaryId}`);
             if (response.ok) {
                 const fetchedDiary = await response.json();
-                console.log('Fetched Diary:', fetchedDiary);  // 이 라인을 추가하여 응답 확인
+                console.log('Fetched Diary:', fetchedDiary);  
                 setDiary(fetchedDiary);
             } else {
                 console.error('Failed to fetch diary');

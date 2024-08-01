@@ -16,7 +16,7 @@ namespace backend.Services
         }
 
         // Sign up logic
-        public async Task<bool> RegisterUserAsync(string  userId, string password)
+        public async Task<bool> RegisterUserAsync(string userId, string password)
         {
             // Check if user exists
             if (await _context.Users.AnyAsync(u => u.UserId == userId))
@@ -84,6 +84,14 @@ namespace backend.Services
                     return false;
 
             return true;
+        }
+
+        // Fetch a user's diaries
+        public async Task<IEnumerable<Diary>> GetUserDiariesAsync(string userId)
+        {
+            return await _context.Diaries
+                .Where(d => d.UserId == userId)
+                .ToListAsync();
         }
     }
 }
