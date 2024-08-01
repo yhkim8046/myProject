@@ -6,10 +6,7 @@ import Button from '@mui/material/Button';
 const Posting: React.FC = () => {
 
     const navigate = useNavigate();
-    //const [userName, setUserName] = useState('');
-    const userName = 'Sam';
-
-
+    const [userName, setUserName] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 

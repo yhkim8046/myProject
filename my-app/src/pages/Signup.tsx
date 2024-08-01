@@ -29,10 +29,10 @@ const Signup = () => {
             return;
         }
 
-        // 백엔드 API URL
+        // Backend API URL
         const apiUrl = 'http://localhost:5182/api/users/register';
 
-        // 회원가입 요청 데이터
+        // Requested sign up data
         const signupData = {
             userId: userId,
             password: password,
@@ -49,7 +49,7 @@ const Signup = () => {
 
             if (response.ok) {
                 console.log('Registration successful');
-                navigate('/Home'); // 회원가입 성공 시 리다이렉션
+                navigate('/Home'); // redirection when success
             } else {
                 console.error('Registration failed');
                 alert('User already exists.');
