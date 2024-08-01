@@ -6,12 +6,12 @@ namespace backend.Models{
         [Key]
         public string DiaryId{get; set;}
         
-        [Required]
-        [MaxLength(64)]
+        [Required(ErrorMessage = 'Required')] 
+        [MaxLength(64, ErrorMessage ="The max length is 64.")]
         public string Title{get; set;}
 
         [Required]
-        [MaxLength(5000)]
+        [MaxLength(5000, ErrorMessage ="The max length is 5000.")]
         public string Content{get; set;}
 
         [Required]
