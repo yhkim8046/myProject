@@ -1,12 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models{
     public class Diary{
 
         [Key]
-        public string DiaryId{get; set;}
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int DiaryId{get; set;}
         
-        [Required(ErrorMessage = 'Required')] 
+        [Required(ErrorMessage = "Required.")]
         [MaxLength(64, ErrorMessage ="The max length is 64.")]
         public string Title{get; set;}
 

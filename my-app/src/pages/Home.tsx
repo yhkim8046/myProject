@@ -37,7 +37,7 @@ const Home = () => {
 
             if (response.ok) {
                 console.log('Login successful');
-                navigate('/Posting'); // 로그인 성공 시 리다이렉션
+                navigate('/DiariesList'); // 로그인 성공 시 리다이렉션
             } else {
                 console.error('Login failed');
                 alert('Invalid username or password.');

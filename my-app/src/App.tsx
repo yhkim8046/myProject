@@ -5,6 +5,7 @@ import Posting from './pages/Posting';
 import Detail from './pages/Detail';
 import Feedback from './pages/Feedback';
 import Signup from './pages/Signup';
+import Diaries from './pages/\bDiaries';
 
 const App: React.FC = () => {
   return (
@@ -14,8 +15,9 @@ const App: React.FC = () => {
         <Route path="/Home" element={<Home />} />
         <Route path="/Signup" element={<Signup/>}/>
         <Route path="/posting" element={<Posting />} />
-        <Route path="/detail" element={<Detail></Detail>} />
+        <Route path="/detail/:id" element={<Detail />} />
         <Route path="/Feedback" element={<Feedback />} />
+        <Route path="/DiariesList" element={<Diaries />} />
       </Routes>
     </Router>
   );

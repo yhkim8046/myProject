@@ -14,15 +14,27 @@ namespace Services.backend
             _context = context;
         }
 
-        public async Task<IEnumerable<Diary>> GetDiariesAsync()
+        //post
+        public async Task<Diary> CreateDiaryAsync(Diary diary)
+        {
+            _context.Diaries.Add(diary);
+            await _context.SaveChangesAsync();
+            return diary;
+        }
+
+        //findAll
+        public async Task<IEnumerable<Diary>> FindAllDiariesAsync()
         {
             return await _context.Diaries.ToListAsync();
         }
-        public async Task<Diary> GetDiaryAsync(string Id)
+
+        //findById
+        public async Task<Diary> FindDiaryByIdAsync(int DiaryId)
         {
-            return await _context.Diaries.FindAsync(Id);
+            return await _context.Diaries.FindAsync(DiaryId);
         }
 
+        //update
         public async Task<bool> UpdateDiaryAsync(Diary diary)
         {
             _context.Entry(diary).State = EntityState.Modified;
@@ -37,7 +49,8 @@ namespace Services.backend
             }
         }
 
-        public async Task<bool> DeleteDiaryAsync(string id)
+        //Delete 
+        public async Task<bool> DeleteDiaryAsync(int id)
         {
             var diary = await _context.Diaries.FindAsync(id);
             if (diary == null)
