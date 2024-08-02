@@ -7,7 +7,7 @@ const Detail = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [diary, setDiary] = useState({
-        id: 0,
+        DiaryId: 0, // ID 필드 수정
         date: '',
         time: '',
         title: '',
@@ -16,46 +16,77 @@ const Detail = () => {
 
     useEffect(() => {
         if (location.state) {
-            setDiary(location.state);
+            console.log('Location state:', location.state);
+            setDiary({
+                DiaryId: location.state.diaryId, // 서버에서 받은 필드명과 일치시킴
+                date: location.state.date,
+                time: location.state.time,
+                title: location.state.title,
+                content: location.state.content
+            });
         } else {
             const diaryIdString = location.pathname.split('/').pop();
+            console.log('Diary ID string:', diaryIdString);
             const diaryId = diaryIdString ? parseInt(diaryIdString, 10) : undefined;
-
-            if (diaryId !== undefined) {
+    
+            if (diaryId !== undefined && !isNaN(diaryId)) {
                 fetchDiary(diaryId);
             } else {
-                console.error('Invalid DiaryId');
+                console.error('Invalid DiaryId:', diaryIdString);
             }
         }
     }, [location.state, location.pathname]);
-
+    
     const fetchDiary = async (DiaryId: number | undefined) => {
         if (DiaryId === undefined) {
             console.error('DiaryId is undefined');
             return;
         }
-
+    
         try {
+            console.log('Fetching diary with ID:', DiaryId);
             const response = await fetch(`/api/diaries/${DiaryId}`);
             if (response.ok) {
                 const fetchedDiary = await response.json();
+                console.log('Fetched Diary:', fetchedDiary);
                 setDiary(fetchedDiary);
             } else {
-                console.error('Failed to fetch diary');
+                console.error('Failed to fetch diary, status:', response.status);
             }
         } catch (error) {
             console.error('An error occurred while fetching diary:', error);
         }
     };
-
+    
     const handleMotivateClick = () => {
         navigate('/Feedback');
     };
 
-    const handleDeleteClick = () => {
-        navigate('/Diaries');
+    const handleDeleteClick = async () => {
+        if (!diary.DiaryId) { // ID 필드 확인
+            console.error('Diary ID is not available');
+            return;
+        }
+    
+        try {
+            const response = await fetch(`http://localhost:5182/api/diaries/${diary.DiaryId}`, { // DiaryId로 삭제 요청
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                console.log('Diary deleted successfully');
+                navigate('/Diaries'); // 성공적으로 삭제되면 다이어리 목록 페이지로 이동
+            } else {
+                console.error('Failed to delete diary');
+            }
+        } catch (error) {
+            console.error('An error occurred while deleting the diary:', error);
+        }
     };
-
+    
     const handleEditClick = () => {
         navigate('/Edit');
     };
