@@ -29,7 +29,6 @@ const Detail = () => {
             }
         }
     }, [location.state, location.pathname]);
-    
 
     const fetchDiary = async (DiaryId: number | undefined) => {
         if (DiaryId === undefined) {
@@ -41,7 +40,7 @@ const Detail = () => {
             const response = await fetch(`/api/diaries/${DiaryId}`);
             if (response.ok) {
                 const fetchedDiary = await response.json();
-                console.log('Fetched Diary:', fetchedDiary);  
+                console.log('Fetched Diary:', fetchedDiary);
                 setDiary(fetchedDiary);
             } else {
                 console.error('Failed to fetch diary');
@@ -50,29 +49,36 @@ const Detail = () => {
             console.error('An error occurred while fetching diary:', error);
         }
     };
-    
-    
 
-    const handleShareClick = () => {
+    const handleMotivateClick = () => {
         navigate('/Feedback');
     };
 
+    const handleDeleteClick = () => {
+        navigate('/Diaries');
+    };
+
+    const handleEditClick = () => {
+        navigate('/Edit');
+    };
+
+    // 사용자가 읽기 쉬운 형식으로 표시
     const displayDate = new Date(diary.date).toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
     const displayTime = new Date(diary.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
     return (
         <div className={styles.container}>
-            <div className={styles.titleContainer}>
-                <h2 className={styles.titleText}>Title: {diary.title}</h2>
-            </div>
             <div className={styles.header}>
-                <p>Diary on {displayDate} {displayTime}</p>
+                <div>
+                    <h2 className={styles.titleText}>Title: {diary.title}</h2>
+                    <p>Diary on {displayDate} {displayTime}</p>
+                </div>
+                <Button variant="outlined" className={styles.editButton} onClick={handleEditClick}>Edit</Button>
             </div>
             <hr />
             <div className={styles.contentContainer} style={{
-                height: diary.content ? `${Math.min(60, 20 + diary.content.length / 5)}%` : 'auto'
+                height: diary.content ? `${Math.min(80, 20 + diary.content.length / 5)}%` : 'auto'
             }}>
-                <label htmlFor="content"></label>
                 <textarea
                     id="content"
                     name="content"
@@ -83,9 +89,12 @@ const Detail = () => {
                 />
             </div>
             <hr />
-            <Button variant="outlined" onClick={handleShareClick}>Motivate</Button>
+            <div className={styles.buttonContainer}>
+                <Button variant="outlined" onClick={handleDeleteClick}>Delete</Button>
+                <Button variant="outlined" onClick={handleMotivateClick}>Motivate</Button>
+            </div>
         </div>
-    );    
+    );
 }
 
 export default Detail;
