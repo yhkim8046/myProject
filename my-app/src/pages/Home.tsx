@@ -37,6 +37,8 @@ const Home = () => {
 
             if (response.ok) {
                 console.log('Login successful');
+                const responseData = await response.json(); // 서버에서 userId를 포함한 응답을 받는 경우
+                localStorage.setItem('userId', responseData.userId); // userId를 로컬 스토리지에 저장
                 navigate('/DiariesList'); // 로그인 성공 시 리다이렉션
             } else {
                 console.error('Login failed');

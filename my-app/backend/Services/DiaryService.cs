@@ -3,18 +3,18 @@ using System.Threading.Tasks;
 using backend.Models;
 using Microsoft.EntityFrameworkCore;
 
-
-namespace Services.backend
+namespace backend.Services
 {
     public class DiaryService
     {
         private readonly ApplicationDbContext _context;
+
         public DiaryService(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        //post
+        // Create a diary with a specific user
         public async Task<Diary> CreateDiaryAsync(Diary diary)
         {
             _context.Diaries.Add(diary);
@@ -22,19 +22,25 @@ namespace Services.backend
             return diary;
         }
 
-        //findAll
+        // Find all diaries
         public async Task<IEnumerable<Diary>> FindAllDiariesAsync()
         {
             return await _context.Diaries.ToListAsync();
         }
 
-        //findById
-        public async Task<Diary> FindDiaryByIdAsync(int DiaryId)
+        // Find a diary by ID
+        public async Task<Diary> FindDiaryByIdAsync(int id)
         {
-            return await _context.Diaries.FindAsync(DiaryId);
+            return await _context.Diaries.FirstOrDefaultAsync(d => d.DiaryId == id);
         }
 
-        //update
+        // Find diaries by user ID
+        public async Task<IEnumerable<Diary>> FindDiariesByUserIdAsync(string userId)
+        {
+            return await _context.Diaries.Where(d => d.UserId == userId).ToListAsync();
+        }
+
+        // Update a diary
         public async Task<bool> UpdateDiaryAsync(Diary diary)
         {
             _context.Entry(diary).State = EntityState.Modified;
@@ -49,7 +55,7 @@ namespace Services.backend
             }
         }
 
-        //Delete 
+        // Delete a diary
         public async Task<bool> DeleteDiaryAsync(int id)
         {
             var diary = await _context.Diaries.FindAsync(id);
@@ -62,7 +68,5 @@ namespace Services.backend
             await _context.SaveChangesAsync();
             return true;
         }
-
     }
-
 }

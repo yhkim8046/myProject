@@ -5,7 +5,7 @@ import Posting from './pages/Posting';
 import Detail from './pages/Detail';
 import Feedback from './pages/Feedback';
 import Signup from './pages/Signup';
-import Diaries from './pages/\bDiaries';
+import Diaries from './pages/Diaries';
 
 const App: React.FC = () => {
   return (
