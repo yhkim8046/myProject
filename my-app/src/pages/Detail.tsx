@@ -57,13 +57,16 @@ const Detail = () => {
         navigate('/Feedback');
     };
 
+    const displayDate = new Date(diary.date).toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
+    const displayTime = new Date(diary.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     return (
         <div className={styles.container}>
-            <div className={styles.header}>
-                <h1>Diary on {diary.date} {diary.time}</h1>
-            </div>
             <div className={styles.titleContainer}>
                 <h2 className={styles.titleText}>Title: {diary.title}</h2>
+            </div>
+            <div className={styles.header}>
+                <p>Diary on {displayDate} {displayTime}</p>
             </div>
             <hr />
             <div className={styles.contentContainer} style={{
@@ -82,7 +85,7 @@ const Detail = () => {
             <hr />
             <Button variant="outlined" onClick={handleShareClick}>Motivate</Button>
         </div>
-    );
+    );    
 }
 
 export default Detail;

@@ -29,7 +29,7 @@ const Posting: React.FC = () => {
             date: new Date().toISOString(),
             title,
             content,
-            time: new Date().toTimeString().split(' ')[0], // 'hh:mm:ss' 형식으로 변환
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }), // 'HH:MM' 형식으로 변환
         };
     
         try {
