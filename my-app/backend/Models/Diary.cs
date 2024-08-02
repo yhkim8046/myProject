@@ -1,16 +1,32 @@
-using backend.Models;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-public class Diary
+namespace backend.Models
 {
-    public int DiaryId { get; set; }
-    public string Title { get; set; }
-    public string Content { get; set; }
-    public DateTime Date { get; set; }
-    public TimeOnly Time { get; set; }
+    public class Diary
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int DiaryId { get; set; }
 
-    // Foreign key property
-    public string UserId { get; set; }  // <-- 추가
+        [Required]
+        [StringLength(100)]
+        public string Title { get; set; }
 
-    // Navigation property
-    public User User { get; set; }  // <-- 추가
+        [Required]
+        [StringLength(5000)]
+        public string Content { get; set; }
+
+        [Required]
+        public DateTime Date { get; set; }
+
+        [Required]
+        public TimeOnly Time { get; set; }
+
+        // Foreign key property
+        [Required]
+        public string UserId { get; set; }  // userId를 필수로 설정
+    }
+
 }

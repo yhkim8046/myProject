@@ -12,8 +12,8 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240801144232_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240802093228_RemoveRelationships")]
+    partial class RemoveRelationships
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace backend.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Diary", b =>
+            modelBuilder.Entity("backend.Models.Diary", b =>
                 {
                     b.Property<int>("DiaryId")
                         .ValueGeneratedOnAdd()
@@ -35,6 +35,7 @@ namespace backend.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
+                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
@@ -45,15 +46,14 @@ namespace backend.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(16)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DiaryId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Diaries");
                 });
@@ -72,22 +72,6 @@ namespace backend.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Diary", b =>
-                {
-                    b.HasOne("backend.Models.User", "User")
-                        .WithMany("Diaries")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("backend.Models.User", b =>
-                {
-                    b.Navigation("Diaries");
                 });
 #pragma warning restore 612, 618
         }

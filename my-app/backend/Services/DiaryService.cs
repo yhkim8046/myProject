@@ -15,9 +15,8 @@ namespace backend.Services
         }
 
         // Create a diary with a specific user
-        public async Task<Diary> CreateDiaryAsync(string userId, Diary diary)
+        public async Task<Diary> CreateDiaryAsync(Diary diary)
         {
-            diary.UserId = userId;
             _context.Diaries.Add(diary);
             await _context.SaveChangesAsync();
             return diary;
@@ -26,13 +25,19 @@ namespace backend.Services
         // Find all diaries
         public async Task<IEnumerable<Diary>> FindAllDiariesAsync()
         {
-            return await _context.Diaries.Include(d => d.User).ToListAsync();
+            return await _context.Diaries.ToListAsync();
         }
 
         // Find a diary by ID
         public async Task<Diary> FindDiaryByIdAsync(int id)
         {
-            return await _context.Diaries.Include(d => d.User).FirstOrDefaultAsync(d => d.DiaryId == id);
+            return await _context.Diaries.FirstOrDefaultAsync(d => d.DiaryId == id);
+        }
+
+        // Find diaries by user ID
+        public async Task<IEnumerable<Diary>> FindDiariesByUserIdAsync(string userId)
+        {
+            return await _context.Diaries.Where(d => d.UserId == userId).ToListAsync();
         }
 
         // Update a diary

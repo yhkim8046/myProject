@@ -11,10 +11,12 @@ namespace backend.Controllers
     public class DiaryController : ControllerBase
     {
         private readonly DiaryService _diaryService;
+        private readonly ApplicationDbContext _context;
 
-        public DiaryController(DiaryService diaryService)
+        public DiaryController(DiaryService diaryService, ApplicationDbContext context)
         {
             _diaryService = diaryService;
+            _context = context;
         }
 
         [HttpGet]
@@ -43,8 +45,13 @@ namespace backend.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Assuming the UserId is provided in the request body
-            var createdDiary = await _diaryService.CreateDiaryAsync(diary.UserId, diary);
+            // UserId가 올바르게 제공되지 않았을 경우 처리
+            if (string.IsNullOrEmpty(diary.UserId))
+            {
+                return BadRequest("UserId is required.");
+            }
+
+            var createdDiary = await _diaryService.CreateDiaryAsync(diary);
             return CreatedAtAction(nameof(GetDiary), new { id = createdDiary.DiaryId }, createdDiary);
         }
 
@@ -80,6 +87,23 @@ namespace backend.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<Diary>>> GetDiariesByUser(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("UserId is required.");
+            }
+
+            var diaries = await _diaryService.FindDiariesByUserIdAsync(userId);
+            if (diaries == null || !diaries.Any())
+            {
+                return NotFound("No diaries found for the given UserId.");
+            }
+
+            return Ok(diaries);
         }
     }
 }

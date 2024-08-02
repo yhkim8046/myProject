@@ -17,22 +17,29 @@ const Posting: React.FC = () => {
     };
 
     const handleShareClick = async () => {
+        const userId = localStorage.getItem('userId');
+    
+        if (!userId) {
+            console.error('User ID not found in local storage');
+            return;
+        }
+    
         const diary = {
+            userId, // UserId만 전송
             date: new Date().toISOString(),
             title,
             content,
-            time: new Date().toTimeString().split(' ')[0] // 'hh:mm:ss' 형식으로 변환
-        };        
+            time: new Date().toTimeString().split(' ')[0], // 'hh:mm:ss' 형식으로 변환
+        };
     
         try {
             const response = await fetch('http://localhost:5182/api/diaries', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(diary)
+                body: JSON.stringify(diary),
             });
-            
     
             if (response.ok) {
                 const savedDiary = await response.json();
@@ -44,7 +51,7 @@ const Posting: React.FC = () => {
             console.error('An error occurred while posting diary:', error);
         }
     };
-
+    
     return (
         <div className={styles.app}>
             <div className={styles.container}>

@@ -12,8 +12,6 @@ namespace backend.Models
         [Required]
         [MaxLength(256)]
         public string Password { get; set; }
-
-        // Navigation property for the diaries
-        public ICollection<Diary> Diaries { get; set; }
     }
+
 }
