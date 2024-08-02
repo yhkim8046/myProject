@@ -15,13 +15,12 @@ const Detail = () => {
     });
 
     useEffect(() => {
-        console.log('Location state:', location.state); // 상태 확인
         if (location.state) {
             setDiary(location.state);
         } else {
             const diaryIdString = location.pathname.split('/').pop();
             const diaryId = diaryIdString ? parseInt(diaryIdString, 10) : undefined;
-    
+
             if (diaryId !== undefined) {
                 fetchDiary(diaryId);
             } else {
@@ -35,12 +34,11 @@ const Detail = () => {
             console.error('DiaryId is undefined');
             return;
         }
-    
+
         try {
             const response = await fetch(`/api/diaries/${DiaryId}`);
             if (response.ok) {
                 const fetchedDiary = await response.json();
-                console.log('Fetched Diary:', fetchedDiary);
                 setDiary(fetchedDiary);
             } else {
                 console.error('Failed to fetch diary');
@@ -62,7 +60,6 @@ const Detail = () => {
         navigate('/Edit');
     };
 
-    // 사용자가 읽기 쉬운 형식으로 표시
     const displayDate = new Date(diary.date).toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
     const displayTime = new Date(diary.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -76,9 +73,7 @@ const Detail = () => {
                 <Button variant="outlined" className={styles.editButton} onClick={handleEditClick}>Edit</Button>
             </div>
             <hr />
-            <div className={styles.contentContainer} style={{
-                height: diary.content ? `${Math.min(80, 20 + diary.content.length / 5)}%` : 'auto'
-            }}>
+            <div className={styles.contentContainer}>
                 <textarea
                     id="content"
                     name="content"

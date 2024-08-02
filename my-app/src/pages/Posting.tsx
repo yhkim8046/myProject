@@ -24,12 +24,13 @@ const Posting: React.FC = () => {
             return;
         }
     
+        const now = new Date();
         const diary = {
-            userId, // UserId만 전송
-            date: new Date().toISOString(),
+            userId,
+            date: now.toISOString(),
             title,
             content,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }), // 'HH:MM' 형식으로 변환
+            time: now.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }), // 'HH:MM:SS' 형식으로 변환
         };
     
         try {
@@ -51,6 +52,7 @@ const Posting: React.FC = () => {
             console.error('An error occurred while posting diary:', error);
         }
     };
+    
     
     return (
         <div className={styles.app}>
