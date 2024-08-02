@@ -1,6 +1,8 @@
 using backend.Models;
 using backend.Services;
 using Microsoft.EntityFrameworkCore;
+using backend.Controllers;
+using backend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,7 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .WithExposedHeaders("Content-Disposition"); // 필요한 경우 추가 헤더 노출
+            .WithExposedHeaders("Content-Disposition");
     });
 });
 
@@ -26,6 +28,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Register UserService
 builder.Services.AddScoped<UserService>();
+
+// Register DiaryService (누락된 부분 추가)
+builder.Services.AddScoped<DiaryService>();
 
 var app = builder.Build();
 

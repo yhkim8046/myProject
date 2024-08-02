@@ -4,12 +4,7 @@ import styles from '../styles/Posting.module.css';
 import Button from '@mui/material/Button';
 
 const Posting: React.FC = () => {
-
     const navigate = useNavigate();
-    //const [userName, setUserName] = useState('');
-    const userName = 'Sam';
-
-
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
 
@@ -21,35 +16,59 @@ const Posting: React.FC = () => {
         setContent(e.target.value);
     };
 
-    const handleShareClick = () => {
+    const handleShareClick = async () => {
+        const userId = localStorage.getItem('userId');
+    
+        if (!userId) {
+            console.error('User ID not found in local storage');
+            return;
+        }
+    
         const diary = {
-            id:Date.now(),
-            date:new Date().toLocaleDateString(),
-            time:new Date().toLocaleTimeString(),
+            userId, // UserId만 전송
+            date: new Date().toISOString(),
             title,
-            content
+            content,
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }), // 'HH:MM' 형식으로 변환
         };
-        
-        navigate('/detail', {state:diary});
+    
+        try {
+            const response = await fetch('http://localhost:5182/api/diaries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(diary),
+            });
+    
+            if (response.ok) {
+                const savedDiary = await response.json();
+                navigate(`/detail/${savedDiary.DiaryId}`, { state: savedDiary }); // Detail 페이지로 이동
+            } else {
+                console.error('Failed to post diary');
+            }
+        } catch (error) {
+            console.error('An error occurred while posting diary:', error);
+        }
     };
-    //line 42 need to confirm what was the input-container
+    
     return (
         <div className={styles.app}>
             <div className={styles.container}>
                 <div className={styles.greeting}>
-                    <h1>How was your day {userName}?</h1>
+                    <h1>How was your day?</h1>
                 </div>
                 <div>
                     <input
                         type="text"
-                        placeholder="title"
+                        placeholder="Title"
                         className={styles.title}
                         value={title}
                         onChange={handleTitleChange}
                     />
                     <hr/>
                     <textarea
-                        placeholder="share your day"
+                        placeholder="Share your day"
                         className={styles.content}
                         value={content}
                         onChange={handleContentChange}

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using backend.Models;
 
 namespace backend.Models
 {
@@ -12,4 +13,5 @@ namespace backend.Models
         [MaxLength(256)]
         public string Password { get; set; }
     }
+
 }
