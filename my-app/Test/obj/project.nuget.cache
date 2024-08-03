@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jekad9lsHab7U7l/bgTXhKzuheBGX5ZnRMNK90mTJF3lukbu6Ul2z2/OUgdlrcrqTraIDgAfuZJhEAwgb6M8WQ==",
+  "dgSpecHash": "Ls7XJumrnWyeR77r1aWLEm2hl3Na6r3TxJUfg6Q6T9V7NKNJFgc6Je6QmLRkzhxJg0DH78U8lXPWPrW8pSVPog==",
   "success": true,
-  "projectFilePath": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/UserServiceTests/UserServiceTests.csproj",
+  "projectFilePath": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/Test/UserServiceTests.csproj",
   "expectedPackageFiles": [
     "/Users/yuhwankim/.nuget/packages/azure.core/1.35.0/azure.core.1.35.0.nupkg.sha512",
     "/Users/yuhwankim/.nuget/packages/azure.identity/1.10.3/azure.identity.1.10.3.nupkg.sha512",

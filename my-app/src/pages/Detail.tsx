@@ -7,7 +7,7 @@ const Detail = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [diary, setDiary] = useState({
-        DiaryId: 0, // ID 필드 수정
+        DiaryId: 0, 
         date: '',
         time: '',
         title: '',
@@ -16,9 +16,9 @@ const Detail = () => {
 
     useEffect(() => {
         if (location.state) {
-            console.log('Location state:', location.state);
+            console.log('Location state:', location.state); //need to replace it with cookies and sessions 
             setDiary({
-                DiaryId: location.state.diaryId, // 서버에서 받은 필드명과 일치시킴
+                DiaryId: location.state.diaryId, 
                 date: location.state.date,
                 time: location.state.time,
                 title: location.state.title,
@@ -58,27 +58,29 @@ const Detail = () => {
         }
     };
     
-    const handleMotivateClick = () => {
-        navigate('/Feedback');
+    const handlehistoryClick = () => {
+        navigate('/Diaries');
     };
 
     const handleDeleteClick = async () => {
-        if (!diary.DiaryId) { // ID 필드 확인
+        if (!diary.DiaryId) { 
             console.error('Diary ID is not available');
             return;
         }
     
         try {
-            const response = await fetch(`http://localhost:5131/api/diaries/${diary.DiaryId}`, { // DiaryId로 삭제 요청
+            const response = await fetch(`http://localhost:5131/api/diaries/${diary.DiaryId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
+
+            //When success 
             if (response.ok) {
                 console.log('Diary deleted successfully');
-                navigate('/Diaries'); // 성공적으로 삭제되면 다이어리 목록 페이지로 이동
+                navigate('/Posting'); 
             } else {
                 console.error('Failed to delete diary');
             }
@@ -88,9 +90,9 @@ const Detail = () => {
     };
     
     const handleEditClick = () => {
-        navigate('/Edit');
+        navigate(`/Edit/${diary.DiaryId}`);
     };
-
+    
     const displayDate = new Date(diary.date).toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
     const displayTime = new Date(diary.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
@@ -117,7 +119,7 @@ const Detail = () => {
             <hr />
             <div className={styles.buttonContainer}>
                 <Button variant="outlined" onClick={handleDeleteClick}>Delete</Button>
-                <Button variant="outlined" onClick={handleMotivateClick}>Motivate</Button>
+                <Button variant="outlined" onClick={handlehistoryClick}>Histroy</Button>
             </div>
         </div>
     );

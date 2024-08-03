@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Services;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,10 @@ builder.Services.AddCors(options =>
                   .AllowAnyMethod();
         });
 });
+
+// Add logging configuration
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 
 var app = builder.Build();
 
