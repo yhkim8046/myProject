@@ -38,7 +38,7 @@ const Home = () => {
             if (response.ok) {
                 const responseData = await response.json();
                 localStorage.setItem('userId', responseData.userId);
-                navigate('/DiariesList');
+                navigate('/Posting');
             } else {
                 const errorData = await response.json();
                 console.error('Login failed:', errorData.message);

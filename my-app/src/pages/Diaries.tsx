@@ -1,9 +1,7 @@
-// src/components/DiariesList.tsx
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import styles from '../styles/Diaries.module.css';
-import { useNavigate } from 'react-router-dom';
 
 const Diaries: React.FC = () => {
     const [diaries, setDiaries] = useState<any[]>([]);
@@ -12,12 +10,34 @@ const Diaries: React.FC = () => {
     useEffect(() => {
         const fetchDiaries = async () => {
             try {
-                const response = await fetch('/api/diaries');
+                const userId = localStorage.getItem('userId'); // Retrieve the user ID from local storage
+                console.log('Fetched userId from local storage:', userId);
+
+                if (!userId) {
+                    console.error('User ID not found in local storage');
+                    navigate('/login'); // Redirect to login page if user ID is not found
+                    return;
+                }
+
+                console.log('Fetching diaries for userId:', userId);
+                const response = await fetch(`http://localhost:5131/api/diaries/${userId}`); // Use absolute path
+                console.log('Response status:', response.status);
+
                 if (response.ok) {
-                    const data = await response.json();
-                    setDiaries(data);
+                    // Log the response body as text
+                    const responseText = await response.text();
+                    console.log('Response text:', responseText);
+
+                    // Attempt to parse the JSON
+                    try {
+                        const data = JSON.parse(responseText);
+                        console.log('Fetched diaries data:', data);
+                        setDiaries(data);
+                    } catch (parseError) {
+                        console.error('Error parsing JSON:', parseError);
+                    }
                 } else {
-                    console.error('Failed to fetch diaries');
+                    console.error('Failed to fetch diaries, status:', response.status);
                 }
             } catch (error) {
                 console.error('Error fetching diaries:', error);
@@ -25,17 +45,17 @@ const Diaries: React.FC = () => {
         };
 
         fetchDiaries();
-    }, []);
+    }, [navigate]);
 
     return (
         <div className={styles.container}>
             <h1>My Diaries</h1>
             <div className={styles.diariesList}>
                 {diaries.map(diary => (
-                    <div key={diary.id} className={styles.diaryItem}>
+                    <div key={diary.diaryId} className={styles.diaryItem}>
                         <h2>{diary.title}</h2>
                         <p>{diary.content.substring(0, 100)}...</p>
-                        <Link to={`/detail/${diary.id}`}>Read more</Link>
+                        <Button onClick={() => navigate(`/detail/${diary.diaryId}`)}>Read more</Button>
                     </div>
                 ))}
             </div>

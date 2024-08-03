@@ -3885,11 +3885,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/UserServiceTests/UserServiceTests.csproj",
+      "projectUniqueName": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/Test/UserServiceTests.csproj",
       "projectName": "UserServiceTests",
-      "projectPath": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/UserServiceTests/UserServiceTests.csproj",
+      "projectPath": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/Test/UserServiceTests.csproj",
       "packagesPath": "/Users/yuhwankim/.nuget/packages/",
-      "outputPath": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/UserServiceTests/obj/",
+      "outputPath": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/Test/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/yuhwankim/.nuget/NuGet/NuGet.Config"
