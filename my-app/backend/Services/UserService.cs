@@ -1,10 +1,10 @@
-using backend.Models;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace backend.Services
+namespace Services
 {
     public class UserService
     {
@@ -15,83 +15,77 @@ namespace backend.Services
             _context = context;
         }
 
-        // Sign up logic
         public async Task<bool> RegisterUserAsync(string userId, string password)
         {
-            // Check if user exists
+            //Verifying duplication
             if (await _context.Users.AnyAsync(u => u.UserId == userId))
             {
-                return false; // User already exists
+                return false;
             }
 
-            // Sign up
-            var user = new User
-            {
-                UserId = userId,
-                Password = HashPassword(password)
-            };
+            // Generating salt 
+            var salt = GenerateSalt();
+            var hashedPassword = HashPassword(password, salt);
 
+            // Register logic 
+            var user = new User { UserId = userId, Password = hashedPassword, Salt = salt };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<User> LoginUserAsync(string userId, string password)
+        public async Task<User?> GetUserByIdAsync(string userId)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            return await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
+        }
+
+
+        public class RegisterRequest
+        {
+            public string UserId { get; set; }
+            public string Password { get; set; }
+        }
+
+        public async Task<User?> LoginUserAsync(string userId, string password)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
+
             if (user == null)
             {
-                return null; // User not found
+                return null; // 사용자 ID가 존재하지 않음
             }
 
-            if (VerifyPassword(password, user.Password))
+            var hashedPassword = HashPassword(password, user.Salt);
+
+            if (hashedPassword != user.Password)
             {
-                return user; // Login successful
+                return null; // 비밀번호가 일치하지 않음
             }
 
-            return null; // Password not verified
+            return user; // 로그인 성공
         }
 
-        // Password hashing with SHA256
-        private string HashPassword(string password)
+        // Generating Salt 
+        public string GenerateSalt()
         {
-            // Generate a salt
-            byte[] salt;
-            new RNGCryptoServiceProvider().GetBytes(salt = new byte[16]);
-
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-
-            byte[] hashBytes = new byte[36];
-            Array.Copy(salt, 0, hashBytes, 0, 16);
-            Array.Copy(hash, 0, hashBytes, 16, 20);
-
-            return Convert.ToBase64String(hashBytes);
+            byte[] saltBytes = new byte[16];
+            using (var provider = new RNGCryptoServiceProvider())
+            {
+                provider.GetBytes(saltBytes);
+            }
+            return Convert.ToBase64String(saltBytes);
         }
 
-        private bool VerifyPassword(string password, string storedHash)
+        // Password hashing
+        public string HashPassword(string password, string salt)
         {
-            byte[] hashBytes = Convert.FromBase64String(storedHash);
-
-            byte[] salt = new byte[16];
-            Array.Copy(hashBytes, 0, salt, 0, 16);
-
-            var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100000);
-            byte[] hash = pbkdf2.GetBytes(20);
-
-            for (int i = 0; i < 20; i++)
-                if (hashBytes[i + 16] != hash[i])
-                    return false;
-
-            return true;
-        }
-
-        // Fetch a user's diaries
-        public async Task<IEnumerable<Diary>> GetUserDiariesAsync(string userId)
-        {
-            return await _context.Diaries
-                .Where(d => d.UserId == userId)
-                .ToListAsync();
+            using (var sha256 = SHA256.Create())
+            {
+                var saltedPassword = $"{password}{salt}";
+                byte[] saltedPasswordBytes = Encoding.UTF8.GetBytes(saltedPassword);
+                byte[] hashBytes = sha256.ComputeHash(saltedPasswordBytes);
+                return Convert.ToBase64String(hashBytes);
+            }
         }
     }
 }

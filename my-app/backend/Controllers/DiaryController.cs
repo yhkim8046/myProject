@@ -1,109 +1,107 @@
-using Microsoft.AspNetCore.Mvc;
-using backend.Services;
-using backend.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Models;
+using Services;
 
 namespace backend.Controllers
 {
-    [Route("/api/diaries")]
     [ApiController]
-    public class DiaryController : ControllerBase
+    [Route("api/[controller]")]
+    public class DiariesController : ControllerBase
     {
         private readonly DiaryService _diaryService;
-        private readonly ApplicationDbContext _context;
+        private readonly UserService _userService;
 
-        public DiaryController(DiaryService diaryService, ApplicationDbContext context)
+        public DiariesController(DiaryService diaryService, UserService userService)
         {
             _diaryService = diaryService;
-            _context = context;
+            _userService = userService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Diary>>> GetDiaries()
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<List<Diary>>> GetDiaries(string userId)
         {
-            var diaries = await _diaryService.FindAllDiariesAsync();
+            var diaries = await _diaryService.GetDiariesAsync(userId);
+            if (diaries == null || diaries.Count == 0)
+            {
+                return NotFound(new { message = "No diaries found for this user." });
+            }
             return Ok(diaries);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Diary>> GetDiary(int id)
+        [HttpGet("{userId}/{diaryId}")]
+        public async Task<ActionResult<Diary>> GetDiary(string userId, int diaryId)
         {
-            var diary = await _diaryService.FindDiaryByIdAsync(id);
+            var diary = await _diaryService.GetDiaryByIdAsync(diaryId, userId);
+
             if (diary == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Diary not found." });
             }
+
             return Ok(diary);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Diary>> CreateDiary([FromBody] Diary diary)
+        public async Task<IActionResult> CreateDiary([FromBody] Diary diary)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // UserId가 올바르게 제공되지 않았을 경우 처리
             if (string.IsNullOrEmpty(diary.UserId))
             {
-                return BadRequest("UserId is required.");
+                return BadRequest(new { message = "UserId is required." });
             }
 
-            var createdDiary = await _diaryService.CreateDiaryAsync(diary);
-            return CreatedAtAction(nameof(GetDiary), new { id = createdDiary.DiaryId }, createdDiary);
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDiary(int id, [FromBody] Diary diary)
-        {
-            if (id != diary.DiaryId)
-            {
-                return BadRequest();
-            }
-
+            // User 객체를 검증하는 부분을 제거하고 UserId만 처리
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var result = await _diaryService.UpdateDiaryAsync(diary);
-            if (!result)
+            var success = await _diaryService.CreateDiaryAsync(diary);
+
+            if (!success)
             {
-                return NotFound();
+                return StatusCode(500, new { message = "An error occurred while creating the diary." });
+            }
+
+            return CreatedAtAction(nameof(GetDiary), new { userId = diary.UserId, diaryId = diary.DiaryId }, diary);
+        }
+
+
+        [HttpPut("{userId}/{diaryId}")]
+        public async Task<IActionResult> UpdateDiary(int diaryId, [FromBody] Diary diary)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (diaryId != diary.DiaryId)
+            {
+                return BadRequest(new { message = "Diary ID mismatch." });
+            }
+
+            var success = await _diaryService.UpdateDiaryAsync(diary, diaryId);
+
+            if (!success)
+            {
+                return NotFound(new { message = "Diary not found or update failed." });
             }
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDiary(int id)
+        [HttpDelete("{userId}/{diaryId}")]
+        public async Task<IActionResult> DeleteDiary(int diaryId)
         {
-            var result = await _diaryService.DeleteDiaryAsync(id);
-            if (!result)
+            var success = await _diaryService.DeleteDiaryAsync(diaryId);
+
+            if (!success)
             {
-                return NotFound();
+                return NotFound(new { message = "Diary not found or deletion failed." });
             }
 
             return NoContent();
-        }
-
-        [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Diary>>> GetDiariesByUser(string userId)
-        {
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("UserId is required.");
-            }
-
-            var diaries = await _diaryService.FindDiariesByUserIdAsync(userId);
-            if (diaries == null || !diaries.Any())
-            {
-                return NotFound("No diaries found for the given UserId.");
-            }
-
-            return Ok(diaries);
         }
     }
 }

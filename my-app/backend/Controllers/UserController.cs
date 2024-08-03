@@ -1,11 +1,11 @@
-using backend.Services;
-using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Services;
 
 namespace backend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly UserService _userService;
@@ -15,40 +15,46 @@ namespace backend.Controllers
             _userService = userService;
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] UserService.RegisterRequest registerRequest)
         {
-            var user = await _userService.LoginUserAsync(loginRequest.UserId, loginRequest.Password);
-            if (user == null)
+            if (string.IsNullOrEmpty(registerRequest.UserId) || string.IsNullOrEmpty(registerRequest.Password))
             {
-                return Unauthorized(new { message = "Invalid username or password." });
+                return BadRequest(new { message = "UserId and Password are required." });
             }
 
-            return Ok(new { message = "Login successful." });
-        }
+            var success = await _userService.RegisterUserAsync(registerRequest.UserId, registerRequest.Password);
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest registerRequest)
-        {
-            var result = await _userService.RegisterUserAsync(registerRequest.UserId, registerRequest.Password);
-            if (!result)
+            if (!success)
             {
-                return BadRequest(new { message = "User already exists." });
+                return BadRequest(new { message = "User already exists or invalid data." });
             }
 
             return Ok(new { message = "Registration successful." });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            if (string.IsNullOrEmpty(loginRequest.UserId) || string.IsNullOrEmpty(loginRequest.Password))
+            {
+                return BadRequest(new { message = "UserId and Password are required." });
+            }
+
+            var user = await _userService.LoginUserAsync(loginRequest.UserId, loginRequest.Password);
+
+            if (user == null)
+            {
+                return BadRequest(new { message = "Invalid username or password." });
+            }
+
+            return Ok(new { message = "Login successful.", userId = user.UserId });
         }
     }
 
     public class LoginRequest
     {
-        public required string UserId { get; set; }
-        public required string Password { get; set; }
-    }
-
-    public class RegisterRequest
-    {
-        public required string UserId { get; set; }
-        public required string Password { get; set; }
+        public string UserId { get; set; }
+        public string Password { get; set; }
     }
 }

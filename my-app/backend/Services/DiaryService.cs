@@ -1,81 +1,65 @@
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
-using backend.Models;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Models;
 
-
-namespace backend.Services
+namespace Services
 {
     public class DiaryService
     {
         private readonly ApplicationDbContext _context;
-        private readonly string _connectionString;
+
+        public DiaryService(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<Diary?> GetDiaryByIdAsync(int diaryId, string userId)
+        {
+            return await _context.Diaries
+                                 .Where(d => d.DiaryId == diaryId && d.UserId == userId)
+                                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Diary>> GetDiariesAsync(string userId)
+        {
+            return await _context.Diaries
+                                 .Where(d => d.UserId == userId)
+                                 .ToListAsync();
+        }
 
 
-        public DiaryService(ApplicationDbContext context, IConfiguration configuration)
-    {
-        _context = context;
-        _connectionString = configuration.GetConnectionString("DefaultConnection");
-    }
-
-        // Create a diary with a specific user
-        public async Task<Diary> CreateDiaryAsync(Diary diary)
+        public async Task<bool> CreateDiaryAsync(Diary diary)
         {
             _context.Diaries.Add(diary);
-            await _context.SaveChangesAsync();
-            return diary;
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        // Find all diaries
-        public async Task<IEnumerable<Diary>> FindAllDiariesAsync()
+        public async Task<bool> UpdateDiaryAsync(Diary diary, int diaryId)
         {
-            return await _context.Diaries.ToListAsync();
-        }
-
-        // Find a diary by ID
-        public async Task<Diary> FindDiaryByIdAsync(int id)
-        {
-            return await _context.Diaries.FirstOrDefaultAsync(d => d.DiaryId == id);
-        }
-
-        // Find diaries by user ID
-        public async Task<IEnumerable<Diary>> FindDiariesByUserIdAsync(string userId)
-        {
-            return await _context.Diaries.Where(d => d.UserId == userId).ToListAsync();
-        }
-
-        // Update a diary
-        public async Task<bool> UpdateDiaryAsync(Diary diary)
-        {
-            _context.Entry(diary).State = EntityState.Modified;
-            try
-            {
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            catch (DbUpdateConcurrencyException)
+            if (diary.DiaryId != diaryId)
             {
                 return false;
             }
+
+            _context.Diaries.Update(diary);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        // Delete a diary
         public async Task<bool> DeleteDiaryAsync(int diaryId)
-    {
-        using (var connection = new SqlConnection(_connectionString))
         {
-            await connection.OpenAsync();
-            using (var command = new SqlCommand("DELETE FROM Diaries WHERE DiaryId = @DiaryId", connection))
-            {
-                command.Parameters.Add(new SqlParameter("@DiaryId", SqlDbType.Int) { Value = diaryId });
+            var diary = await _context.Diaries
+                                      .Where(d => d.DiaryId == diaryId)
+                                      .FirstOrDefaultAsync();
 
-                int rowsAffected = await command.ExecuteNonQueryAsync();
-                return rowsAffected > 0;
+            if (diary == null)
+            {
+                return false;
             }
+
+            _context.Diaries.Remove(diary);
+            return await _context.SaveChangesAsync() > 0;
         }
-    }
     }
 }

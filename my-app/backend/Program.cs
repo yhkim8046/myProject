@@ -1,36 +1,31 @@
-using backend.Models;
-using backend.Services;
 using Microsoft.EntityFrameworkCore;
-using backend.Controllers;
-using backend.Services;
+using Models;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// CORS 설정 추가
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAllOrigins", policy =>
-    {
-        policy
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .WithExposedHeaders("Content-Disposition");
-    });
-});
-
-// Register ApplicationDbContext with SQL Server
+// Add DbContext and configure the connection string
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Register UserService
+// Register application services
 builder.Services.AddScoped<UserService>();
-
-// Register DiaryService (누락된 부분 추가)
 builder.Services.AddScoped<DiaryService>();
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // 클라이언트 도메인 추가
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
@@ -46,8 +41,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// CORS 사용
-app.UseCors("AllowAllOrigins");
+// Use CORS before other middleware
+app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthorization();
 
