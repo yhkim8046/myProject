@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "YAdPTs4NPNhX5MlxvjVMZKXHv1KHTyE0A62SMngNxa2tejdNEBGq/DOhseBYqx+SH46E+tBG1zT5ZjhR5uBXBA==",
+  "dgSpecHash": "Uot//U22mMiJvcQv2YbPx3UjlTJWES0wXoWipP2PzdPzIyZY7eMEtp6Y3Al4C/IR60awE42fdOU9FV6EtnmNrg==",
   "success": true,
   "projectFilePath": "/Users/yuhwankim/Desktop/myProject/myProject/my-app/backend/backend.csproj",
   "expectedPackageFiles": [
@@ -22,6 +22,7 @@
     "/Users/yuhwankim/.nuget/packages/microsoft.entityframeworkcore.design/8.0.7/microsoft.entityframeworkcore.design.8.0.7.nupkg.sha512",
     "/Users/yuhwankim/.nuget/packages/microsoft.entityframeworkcore.relational/8.0.7/microsoft.entityframeworkcore.relational.8.0.7.nupkg.sha512",
     "/Users/yuhwankim/.nuget/packages/microsoft.entityframeworkcore.sqlserver/8.0.7/microsoft.entityframeworkcore.sqlserver.8.0.7.nupkg.sha512",
+    "/Users/yuhwankim/.nuget/packages/microsoft.entityframeworkcore.tools/8.0.7/microsoft.entityframeworkcore.tools.8.0.7.nupkg.sha512",
     "/Users/yuhwankim/.nuget/packages/microsoft.extensions.caching.abstractions/8.0.0/microsoft.extensions.caching.abstractions.8.0.0.nupkg.sha512",
     "/Users/yuhwankim/.nuget/packages/microsoft.extensions.caching.memory/8.0.0/microsoft.extensions.caching.memory.8.0.0.nupkg.sha512",
     "/Users/yuhwankim/.nuget/packages/microsoft.extensions.configuration.abstractions/8.0.0/microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
