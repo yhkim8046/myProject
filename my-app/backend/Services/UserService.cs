@@ -20,7 +20,7 @@ namespace Services
             //Verifying duplication
             if (await _context.Users.AnyAsync(u => u.UserId == userId))
             {
-                return false; 
+                return false;
             }
 
             // Generating salt 
@@ -34,10 +34,35 @@ namespace Services
             return true;
         }
 
+        public async Task<User?> GetUserByIdAsync(string userId)
+        {
+            return await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
+        }
+
+
         public class RegisterRequest
         {
             public string UserId { get; set; }
             public string Password { get; set; }
+        }
+
+        public async Task<User?> LoginUserAsync(string userId, string password)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return null; // 사용자 ID가 존재하지 않음
+            }
+
+            var hashedPassword = HashPassword(password, user.Salt);
+
+            if (hashedPassword != user.Password)
+            {
+                return null; // 비밀번호가 일치하지 않음
+            }
+
+            return user; // 로그인 성공
         }
 
         // Generating Salt 

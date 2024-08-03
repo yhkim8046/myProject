@@ -69,7 +69,7 @@ const Detail = () => {
         }
     
         try {
-            const response = await fetch(`http://localhost:5182/api/diaries/${diary.DiaryId}`, { // DiaryId로 삭제 요청
+            const response = await fetch(`http://localhost:5131/api/diaries/${diary.DiaryId}`, { // DiaryId로 삭제 요청
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

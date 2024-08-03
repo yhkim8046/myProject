@@ -15,19 +15,20 @@ namespace Services
             _context = context;
         }
 
-        public async Task<List<Diary>> GetDiariesAsync(int userId)
+        public async Task<Diary?> GetDiaryByIdAsync(int diaryId, string userId)
+        {
+            return await _context.Diaries
+                                 .Where(d => d.DiaryId == diaryId && d.UserId == userId)
+                                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Diary>> GetDiariesAsync(string userId)
         {
             return await _context.Diaries
                                  .Where(d => d.UserId == userId)
                                  .ToListAsync();
         }
 
-        public async Task<Diary?> GetDiaryByIdAsync(int id, int userId)
-        {
-            return await _context.Diaries
-                                 .Where(d => d.Id == id && d.UserId == userId)
-                                 .FirstOrDefaultAsync();
-        }
 
         public async Task<bool> CreateDiaryAsync(Diary diary)
         {
@@ -35,9 +36,9 @@ namespace Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> UpdateDiaryAsync(Diary diary, int userId)
+        public async Task<bool> UpdateDiaryAsync(Diary diary, int diaryId)
         {
-            if (diary.UserId != userId)
+            if (diary.DiaryId != diaryId)
             {
                 return false;
             }
@@ -46,10 +47,10 @@ namespace Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> DeleteDiaryAsync(int id, int userId)
+        public async Task<bool> DeleteDiaryAsync(int diaryId)
         {
             var diary = await _context.Diaries
-                                      .Where(d => d.Id == id && d.UserId == userId)
+                                      .Where(d => d.DiaryId == diaryId)
                                       .FirstOrDefaultAsync();
 
             if (diary == null)

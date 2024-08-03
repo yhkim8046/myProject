@@ -16,25 +16,28 @@ const Posting: React.FC = () => {
         setContent(e.target.value);
     };
 
+    // 수정된 Posting 컴포넌트의 handleShareClick 예시
     const handleShareClick = async () => {
         const userId = localStorage.getItem('userId');
     
         if (!userId) {
             console.error('User ID not found in local storage');
+            alert('Please log in to post a diary.');
+            navigate('/login'); // 로그인 페이지로 리다이렉션
             return;
         }
     
         const now = new Date();
         const diary = {
-            userId,
+            userId, // 문자열 그대로 사용
             date: now.toISOString(),
             title,
             content,
-            time: now.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }), // 'HH:MM:SS' 형식으로 변환
+            time: now.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
         };
     
         try {
-            const response = await fetch('http://localhost:5182/api/diaries', {
+            const response = await fetch('http://localhost:5131/api/diaries', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -44,16 +47,20 @@ const Posting: React.FC = () => {
     
             if (response.ok) {
                 const savedDiary = await response.json();
-                navigate(`/detail/${savedDiary.DiaryId}`, { state: savedDiary }); // Detail 페이지로 이동
+                navigate(`/detail/${savedDiary.diaryId}`, { state: savedDiary }); // Detail 페이지로 이동
             } else {
-                console.error('Failed to post diary');
+                const errorText = await response.text();
+                console.error('Failed to post diary:', errorText);
+                alert('Failed to post diary: ' + errorText);
             }
         } catch (error) {
             console.error('An error occurred while posting diary:', error);
+            alert('An unexpected error occurred. Please try again later.');
         }
     };
     
     
+
     return (
         <div className={styles.app}>
             <div className={styles.container}>

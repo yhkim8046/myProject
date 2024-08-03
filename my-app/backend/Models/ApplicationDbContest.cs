@@ -18,7 +18,6 @@ namespace Models
 
     public class User
     {
-        public int Id { get; set; }
         public string UserId { get; set; }
         public string Password { get; set; }
         public string? Salt { get; set; }
@@ -28,12 +27,11 @@ namespace Models
 
     public class Diary
     {
-        public int Id { get; set; }
+        public int DiaryId{get; set;}
         public string Title { get; set; } 
         public string Content { get; set; }
         public DateTime Date { get; set; }
 
-        public int UserId { get; set; }
-        public User User { get; set; }
+        public string UserId { get; set; }
     }
 }

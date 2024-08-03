@@ -30,7 +30,7 @@ const Signup = () => {
         }
 
         // Backend API URL
-        const apiUrl = 'http://localhost:5182/api/users/register';
+        const apiUrl = 'http://localhost:5131/api/users/register';
 
         // Requested sign up data
         const signupData = {
@@ -49,10 +49,12 @@ const Signup = () => {
 
             if (response.ok) {
                 console.log('Registration successful');
-                navigate('/Home'); // redirection when success
+                alert('Registration successful. Please log in.');
+                navigate('/Home'); // Redirect upon success
             } else {
                 console.error('Registration failed');
-                alert('User already exists.');
+                const errorData = await response.json();
+                alert(errorData.message || 'An error occurred. Please try again.');
             }
         } catch (error) {
             console.error('Error:', error);

@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
 using Microsoft.EntityFrameworkCore;
-using Models; 
+using Models;
 using Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +13,19 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Register application services
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<DiaryService>();
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000") // 클라이언트 도메인 추가
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
 
 var app = builder.Build();
 
@@ -28,6 +40,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Use CORS before other middleware
+app.UseCors("AllowSpecificOrigins");
 
 app.UseAuthorization();
 

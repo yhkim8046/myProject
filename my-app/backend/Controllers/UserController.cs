@@ -18,6 +18,11 @@ namespace backend.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserService.RegisterRequest registerRequest)
         {
+            if (string.IsNullOrEmpty(registerRequest.UserId) || string.IsNullOrEmpty(registerRequest.Password))
+            {
+                return BadRequest(new { message = "UserId and Password are required." });
+            }
+
             var success = await _userService.RegisterUserAsync(registerRequest.UserId, registerRequest.Password);
 
             if (!success)
@@ -27,5 +32,29 @@ namespace backend.Controllers
 
             return Ok(new { message = "Registration successful." });
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
+        {
+            if (string.IsNullOrEmpty(loginRequest.UserId) || string.IsNullOrEmpty(loginRequest.Password))
+            {
+                return BadRequest(new { message = "UserId and Password are required." });
+            }
+
+            var user = await _userService.LoginUserAsync(loginRequest.UserId, loginRequest.Password);
+
+            if (user == null)
+            {
+                return BadRequest(new { message = "Invalid username or password." });
+            }
+
+            return Ok(new { message = "Login successful.", userId = user.UserId });
+        }
+    }
+
+    public class LoginRequest
+    {
+        public string UserId { get; set; }
+        public string Password { get; set; }
     }
 }

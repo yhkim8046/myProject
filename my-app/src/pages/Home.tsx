@@ -17,10 +17,10 @@ const Home = () => {
     };
 
     const handleLoginClick = async () => {
-        // 백엔드 API URL
-        const apiUrl = 'http://localhost:5182/api/users/login';
+        // Backend API URL
+        const apiUrl = 'http://localhost:5131/api/users/login';
 
-        // 로그인 요청 데이터
+        // Login request data
         const loginData = {
             userId: username,
             password: password,
@@ -36,12 +36,12 @@ const Home = () => {
             });
 
             if (response.ok) {
-                console.log('Login successful');
-                const responseData = await response.json(); // 서버에서 userId를 포함한 응답을 받는 경우
-                localStorage.setItem('userId', responseData.userId); // userId를 로컬 스토리지에 저장
-                navigate('/DiariesList'); // 로그인 성공 시 리다이렉션
+                const responseData = await response.json();
+                localStorage.setItem('userId', responseData.userId);
+                navigate('/DiariesList');
             } else {
-                console.error('Login failed');
+                const errorData = await response.json();
+                console.error('Login failed:', errorData.message);
                 alert('Invalid username or password.');
             }
         } catch (error) {
