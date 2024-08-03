@@ -8,6 +8,9 @@ namespace Models
             : base(options)
         {
         }
+          public ApplicationDbContext()
+        {
+        }
 
         public DbSet<User> Users { get; set; }
         public DbSet<Diary> Diaries { get; set; }
@@ -18,6 +21,7 @@ namespace Models
         public int Id { get; set; }
         public string UserId { get; set; }
         public string Password { get; set; }
+        public string? Salt { get; set; }
 
         public ICollection<Diary> Diaries { get; set; } = new List<Diary>();
     }
