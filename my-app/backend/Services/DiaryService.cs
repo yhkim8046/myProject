@@ -1,18 +1,25 @@
 using System.Collections.Generic;
+using System.Data;
 using System.Threading.Tasks;
 using backend.Models;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 
 namespace backend.Services
 {
     public class DiaryService
     {
         private readonly ApplicationDbContext _context;
+        private readonly string _connectionString;
 
-        public DiaryService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+
+        public DiaryService(ApplicationDbContext context, IConfiguration configuration)
+    {
+        _context = context;
+        _connectionString = configuration.GetConnectionString("DefaultConnection");
+    }
 
         // Create a diary with a specific user
         public async Task<Diary> CreateDiaryAsync(Diary diary)
@@ -56,17 +63,19 @@ namespace backend.Services
         }
 
         // Delete a diary
-        public async Task<bool> DeleteDiaryAsync(int id)
+        public async Task<bool> DeleteDiaryAsync(int diaryId)
+    {
+        using (var connection = new SqlConnection(_connectionString))
         {
-            var diary = await _context.Diaries.FindAsync(id);
-            if (diary == null)
+            await connection.OpenAsync();
+            using (var command = new SqlCommand("DELETE FROM Diaries WHERE DiaryId = @DiaryId", connection))
             {
-                return false;
-            }
+                command.Parameters.Add(new SqlParameter("@DiaryId", SqlDbType.Int) { Value = diaryId });
 
-            _context.Diaries.Remove(diary);
-            await _context.SaveChangesAsync();
-            return true;
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+                return rowsAffected > 0;
+            }
         }
+    }
     }
 }
