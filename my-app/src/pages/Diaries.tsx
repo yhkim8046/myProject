@@ -5,6 +5,7 @@ import styles from '../styles/Diaries.module.css';
 
 const Diaries: React.FC = () => {
     const [diaries, setDiaries] = useState<any[]>([]);
+    const [isDarkMode, setIsDarkMode] = useState(false); // Dark mode state
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -47,12 +48,19 @@ const Diaries: React.FC = () => {
         fetchDiaries();
     }, [navigate]);
 
+    const toggleDarkMode = () => {
+        setIsDarkMode(prevMode => !prevMode);
+    };
+
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${isDarkMode ? styles.dark : ''}`}>
             <h1>My Diaries</h1>
+            <Button variant="outlined" onClick={toggleDarkMode}>
+                {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+            </Button>
             <div className={styles.diariesList}>
                 {diaries.map(diary => (
-                    <div key={diary.diaryId} className={styles.diaryItem}>
+                    <div key={diary.diaryId} className={`${styles.diaryItem} ${isDarkMode ? styles.dark : ''}`}>
                         <h2>{diary.title}</h2>
                         <p>{diary.content.substring(0, 100)}...</p>
                         <Button onClick={() => navigate(`/detail/${diary.diaryId}`)}>Read more</Button>

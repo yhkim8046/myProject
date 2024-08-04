@@ -1,10 +1,35 @@
-/* src/styles/DiariesList.module.css */
 
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.container.dark {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+.diaryItem {
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+.diaryItem.dark {
+    border-bottom: 1px solid #444;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttonContainer.dark {
+    background-color: #333;
+    color: #ffffff;
 }
 
 h1 {
@@ -24,6 +49,11 @@ h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.diaryItem.dark {
+    border: 1px solid #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 .diaryItem h2 {
     font-size: 1.5rem;
     margin-bottom: 10px;
@@ -33,6 +63,10 @@ h1 {
     font-size: 1rem;
     margin-bottom: 10px;
     color: #555;
+}
+
+.diaryItem p.dark {
+    color: #bbb;
 }
 
 .diaryItem a {

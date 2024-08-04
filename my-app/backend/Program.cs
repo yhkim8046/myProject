@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") // 클라이언트 도메인 추가
+            policy.WithOrigins("http://localhost:3000") // client domain
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
