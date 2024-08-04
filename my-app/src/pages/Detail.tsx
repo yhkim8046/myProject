@@ -18,7 +18,7 @@ const Detail = () => {
 
     useEffect(() => {
         if (location.state) {
-            console.log('Location state:', location.state); //need to replace it with cookies and sessions 
+            console.log('Location state:', location.state); 
             setDiary({
                 DiaryId: location.state.diaryId, 
                 date: location.state.date,
@@ -59,11 +59,14 @@ const Detail = () => {
             console.error('An error occurred while fetching diary:', error);
         }
     };
+
+    //Handling history button
     
     const handlehistoryClick = () => {
         navigate('/Diaries');
     };
 
+    //Handling delete button
     const handleDeleteClick = async () => {
         if (!diary.DiaryId) { 
             console.error('Diary ID is not available');
@@ -90,6 +93,7 @@ const Detail = () => {
         }
     };
     
+    //Handling edit button
     const handleEditClick = () => {
         navigate(`/edit/${diaryId}`, {
             state: {
