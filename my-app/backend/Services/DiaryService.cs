@@ -15,6 +15,8 @@ namespace Services
             _context = context;
         }
 
+
+        //Reading 
         public async Task<Diary?> GetDiaryByIdAsync(int diaryId, string userId)
         {
             return await _context.Diaries
@@ -30,12 +32,15 @@ namespace Services
         }
 
 
+        //Creating 
         public async Task<bool> CreateDiaryAsync(Diary diary)
         {
             _context.Diaries.Add(diary);
             return await _context.SaveChangesAsync() > 0;
         }
 
+
+        //updating
         public async Task<bool> UpdateDiaryAsync(Diary diary, int diaryId)
         {
             if (diary.DiaryId != diaryId)
@@ -47,6 +52,8 @@ namespace Services
             return await _context.SaveChangesAsync() > 0;
         }
 
+
+        //Deleting
         public async Task<bool> DeleteDiaryAsync(int diaryId)
         {
             var diary = await _context.Diaries

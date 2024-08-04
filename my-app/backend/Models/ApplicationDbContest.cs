@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 
 namespace Models
-{
+{   
+    // DbContext configuration for database dependency injection
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -16,6 +17,7 @@ namespace Models
         public DbSet<Diary> Diaries { get; set; }
     }
 
+    //Object user 
     public class User
     {
         public string UserId { get; set; }
@@ -25,6 +27,8 @@ namespace Models
         public ICollection<Diary> Diaries { get; set; } = new List<Diary>();
     }
 
+
+    //Object Diary 
     public class Diary
     {
         public int DiaryId{get; set;}

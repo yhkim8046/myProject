@@ -1,38 +1,50 @@
 // src/pages/Edit.tsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import styles from '../styles/Posting.module.css';
 import Button from '@mui/material/Button';
 
 const EditDiary: React.FC = () => {
     const { diaryId } = useParams<{ diaryId: string }>();
     const navigate = useNavigate();
-    const [title, setTitle] = useState<string>('');
-    const [content, setContent] = useState<string>('');
+    const location = useLocation();
+    const diary = location.state?.diary;
+
+    // 상태로부터 diary 객체의 값 가져오기
+    const [title, setTitle] = useState<string>(diary?.title || '');
+    const [content, setContent] = useState<string>(diary?.content || '');
+    const [date, setDate] = useState<string>(diary?.date || '');
+    const [time, setTime] = useState<string>(diary?.time || '');
+    const [userId, setUserId] = useState<string>(diary?.userId || '');
 
     useEffect(() => {
-        const fetchDiary = async () => {
-            if (!diaryId) {
-                console.error('Diary ID is not provided');
-                return;
-            }
-
-            try {
-                const response = await fetch(`http://localhost:5131/api/diaries/${diaryId}`);
-                if (response.ok) {
-                    const diary = await response.json();
-                    setTitle(diary.title);
-                    setContent(diary.content);
-                } else {
-                    console.error('Failed to fetch diary');
+        if (!diary) {
+            const fetchDiary = async () => {
+                if (!diaryId) {
+                    console.error('Diary ID is not provided');
+                    return;
                 }
-            } catch (error) {
-                console.error('Error fetching diary:', error);
-            }
-        };
 
-        fetchDiary();
-    }, [diaryId]);
+                try {
+                    const response = await fetch(`http://localhost:5131/api/diaries/${diaryId}`);
+                    if (response.ok) {
+                        const fetchedDiary = await response.json();
+                        setTitle(fetchedDiary.title);
+                        setContent(fetchedDiary.content);
+                        setDate(fetchedDiary.date);
+                        setTime(fetchedDiary.time);
+                        setUserId(fetchedDiary.userId);
+                    } else {
+                        console.error('Failed to fetch diary');
+                    }
+                } catch (error) {
+                    console.error('Error fetching diary:', error);
+                }
+            };
+
+            fetchDiary();
+        }
+    }, [diary, diaryId]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
@@ -43,24 +55,25 @@ const EditDiary: React.FC = () => {
     };
 
     const handleUpdateClick = async () => {
-        const userId = localStorage.getItem('userId');
+        const storedUserId = localStorage.getItem('userId') || userId;
 
-        if (!userId) {
+        if (!storedUserId) {
             console.error('User ID not found in local storage');
             alert('Please log in to update the diary.');
             navigate('/login');
             return;
         }
 
-        if (!diaryId) {
-            console.error('Diary ID is not available');
+        if (!diaryId || isNaN(parseInt(diaryId, 10))) {
+            console.error('Diary ID is not valid');
             return;
         }
 
         const updatedDiary = {
             diaryId: parseInt(diaryId, 10),
-            userId,
-            date: new Date().toISOString(),
+            userId: storedUserId,
+            date,
+            time,
             title,
             content,
         };
@@ -75,11 +88,11 @@ const EditDiary: React.FC = () => {
             });
 
             if (response.ok) {
-                navigate(`/detail/${diaryId}`);
+                navigate(`/diaries`);
             } else {
-                const errorText = await response.text();
-                console.error('Failed to update diary:', errorText);
-                alert('Failed to update diary: ' + errorText);
+                const errorData = await response.json();
+                console.error('Failed to update diary:', errorData);
+                alert('Failed to update diary: ' + JSON.stringify(errorData));
             }
         } catch (error) {
             console.error('An error occurred while updating the diary:', error);
