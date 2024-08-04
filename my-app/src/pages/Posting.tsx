@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from '../styles/Posting.module.css';
 import Button from '@mui/material/Button';
+import { Link } from 'react-router-dom';
+
 
 const Posting: React.FC = () => {
     const navigate = useNavigate();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const userId = localStorage.getItem('userId');
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTitle(e.target.value);
@@ -57,14 +60,14 @@ const Posting: React.FC = () => {
             alert('An unexpected error occurred. Please try again later.');
         }
     };
-    
-    
 
     return (
         <div className={styles.app}>
             <div className={styles.container}>
                 <div className={styles.greeting}>
-                    <h1>How was your day?</h1>
+                    <h1>
+                        <Link to="/Diaries" className={styles.link}>How was your day? {userId}</Link>
+                    </h1>
                 </div>
                 <div>
                     <input

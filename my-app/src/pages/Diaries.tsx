@@ -63,7 +63,7 @@ const Diaries: React.FC = () => {
                     <div key={diary.diaryId} className={`${styles.diaryItem} ${isDarkMode ? styles.dark : ''}`}>
                         <h2>{diary.title}</h2>
                         <p>{diary.content.substring(0, 100)}...</p>
-                        <Button onClick={() => navigate(`/detail/${diary.diaryId}`)}>Read more</Button>
+                        <Button onClick={() => navigate(`/detail/${diary.diaryId}`, { state: { diaryId: diary.diaryId, date: diary.date, time: diary.time, title: diary.title, content: diary.content } })}>Read more</Button>
                     </div>
                 ))}
             </div>
