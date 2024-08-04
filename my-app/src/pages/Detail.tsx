@@ -5,49 +5,50 @@ import styles from '../styles/Detail.module.css';
 
 const Detail = () => {
     const location = useLocation();
-    const { DiaryId, date, time, title, content } = location.state || {};
+    const { diaryId } = useParams<{ diaryId: string }>();
     const navigate = useNavigate();
-    const { diaryId } = useParams();
     const [diary, setDiary] = useState({
-        DiaryId: 0, 
+        diaryId: 0, 
         date: '',
         time: '',
         title: '',
-        content: ''
+        content: '',
+        userId: ''
     });
 
     useEffect(() => {
         if (location.state) {
             console.log('Location state:', location.state); 
             setDiary({
-                DiaryId: location.state.diaryId, 
+                diaryId: location.state.diaryId, 
                 date: location.state.date,
                 time: location.state.time,
                 title: location.state.title,
-                content: location.state.content
+                content: location.state.content,
+                userId: location.state.userId
             });
         } else {
             const diaryIdString = location.pathname.split('/').pop();
             console.log('Diary ID string:', diaryIdString);
-            const diaryId = diaryIdString ? parseInt(diaryIdString, 10) : undefined;
+            const diaryIdNum = diaryIdString ? parseInt(diaryIdString, 10) : undefined;
     
-            if (diaryId !== undefined && !isNaN(diaryId)) {
-                fetchDiary(diaryId);
+            if (diaryIdNum !== undefined && !isNaN(diaryIdNum)) {
+                fetchDiary(diaryIdNum);
             } else {
-                console.error('Invalid DiaryId:', diaryIdString);
+                console.error('Invalid diaryId:', diaryIdString);
             }
         }
     }, [location.state, location.pathname]);
     
-    const fetchDiary = async (DiaryId: number | undefined) => {
-        if (DiaryId === undefined) {
-            console.error('DiaryId is undefined');
+    const fetchDiary = async (diaryId: number | undefined) => {
+        if (diaryId === undefined) {
+            console.error('diaryId is undefined');
             return;
         }
     
         try {
-            console.log('Fetching diary with ID:', DiaryId);
-            const response = await fetch(`/api/diaries/${DiaryId}`);
+            console.log('Fetching diary with ID:', diaryId);
+            const response = await fetch(`/api/diaries/${diaryId}`);
             if (response.ok) {
                 const fetchedDiary = await response.json();
                 console.log('Fetched Diary:', fetchedDiary);
@@ -60,28 +61,24 @@ const Detail = () => {
         }
     };
 
-    //Handling history button
-    
     const handlehistoryClick = () => {
         navigate('/Diaries');
     };
 
-    //Handling delete button
     const handleDeleteClick = async () => {
-        if (!diary.DiaryId) { 
+        if (!diary.diaryId) { 
             console.error('Diary ID is not available');
             return;
         }
     
         try {
-            const response = await fetch(`http://localhost:5131/api/diaries/${diary.DiaryId}`, {
+            const response = await fetch(`http://localhost:5131/api/diaries/${diary.diaryId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
 
-            //When success 
             if (response.ok) {
                 console.log('Diary deleted successfully');
                 navigate('/Posting'); 
@@ -93,16 +90,19 @@ const Detail = () => {
         }
     };
     
-    //Handling edit button
     const handleEditClick = () => {
-        navigate(`/edit/${diaryId}`, {
-            state: {
-                diaryId,
-                date,
-                time,
-                title,
-                content
-            }
+        const editDiary = {
+            diaryId: diary.diaryId,
+            date: diary.date,
+            time: diary.time,
+            title: diary.title,
+            content: diary.content,
+            userId: diary.userId
+        };
+        
+        console.log("Navigating with diary:", editDiary);
+        navigate(`/edit/${diary.diaryId}`, {
+            state: { diary: editDiary }
         });
     };
     
