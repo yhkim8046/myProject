@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import styles from '../styles/Detail.module.css';
 
 const Detail = () => {
     const location = useLocation();
+    const { DiaryId, date, time, title, content } = location.state || {};
     const navigate = useNavigate();
+    const { diaryId } = useParams();
     const [diary, setDiary] = useState({
         DiaryId: 0, 
         date: '',
@@ -76,7 +78,6 @@ const Detail = () => {
                 },
             });
 
-
             //When success 
             if (response.ok) {
                 console.log('Diary deleted successfully');
@@ -90,7 +91,15 @@ const Detail = () => {
     };
     
     const handleEditClick = () => {
-        navigate(`/Edit/${diary.DiaryId}`);
+        navigate(`/edit/${diaryId}`, {
+            state: {
+                diaryId,
+                date,
+                time,
+                title,
+                content
+            }
+        });
     };
     
     const displayDate = new Date(diary.date).toLocaleDateString([], { year: 'numeric', month: 'long', day: 'numeric' });
