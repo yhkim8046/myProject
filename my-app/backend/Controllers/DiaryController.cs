@@ -13,7 +13,7 @@ namespace backend.Controllers
     {
         private readonly DiaryService _diaryService;
         private readonly UserService _userService;
-        private readonly ILogger<DiariesController> _logger;
+        private readonly ILogger<DiariesController> _logger; //for log
 
         public DiariesController(DiaryService diaryService, UserService userService, ILogger<DiariesController> logger)
         {

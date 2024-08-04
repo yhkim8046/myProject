@@ -16,20 +16,19 @@ const Posting: React.FC = () => {
         setContent(e.target.value);
     };
 
-    // 수정된 Posting 컴포넌트의 handleShareClick 예시
     const handleShareClick = async () => {
         const userId = localStorage.getItem('userId');
     
         if (!userId) {
             console.error('User ID not found in local storage');
             alert('Please log in to post a diary.');
-            navigate('/login'); // 로그인 페이지로 리다이렉션
+            navigate('/login'); 
             return;
         }
     
         const now = new Date();
         const diary = {
-            userId, // 문자열 그대로 사용
+            userId, 
             date: now.toISOString(),
             title,
             content,

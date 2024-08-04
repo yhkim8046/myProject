@@ -50,19 +50,20 @@ namespace Services
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
 
+            // user not found
             if (user == null)
             {
-                return null; // 사용자 ID가 존재하지 않음
+                return null; 
             }
 
             var hashedPassword = HashPassword(password, user.Salt);
 
             if (hashedPassword != user.Password)
             {
-                return null; // 비밀번호가 일치하지 않음
+                return null; // wrong password
             }
 
-            return user; // 로그인 성공
+            return user; //successful login
         }
 
         // Generating Salt 

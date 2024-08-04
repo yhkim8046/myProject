@@ -13,7 +13,7 @@
 }
 
 .editButton {
-    margin-left: auto; /* Edit 버튼을 오른쪽으로 정렬 */
+    margin-left: auto; 
     margin-top: 3rem;
 }
 
@@ -23,7 +23,7 @@
 
 .contentContainer {
     margin-bottom: 20rem;
-    height: auto; /* auto로 설정하여 동적으로 높이 조절 */
+    height: auto; 
     border: none;
     line-height: 1.5rem;
 }
