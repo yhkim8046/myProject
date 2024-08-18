@@ -3,16 +3,21 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using System.Security.Cryptography;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Services
 {
     public class UserService
     {
         private readonly ApplicationDbContext _context;
+        private readonly string _jwtSecret;
 
-        public UserService(ApplicationDbContext context)
+        public UserService(ApplicationDbContext context, string jwtSecret)
         {
             _context = context;
+            _jwtSecret = jwtSecret;
         }
 
         public async Task<bool> RegisterUserAsync(string userId, string password)
@@ -46,7 +51,7 @@ namespace Services
             public string Password { get; set; }
         }
 
-        public async Task<User?> LoginUserAsync(string userId, string password)
+        public async Task<string?> LoginUserAsync(string userId, string password)
         {
             var user = await _context.Users.SingleOrDefaultAsync(u => u.UserId == userId);
 
@@ -63,8 +68,29 @@ namespace Services
                 return null; // wrong password
             }
 
-            return user; //successful login
+            //Creating JWT token
+            var token = GenerateJwtToken(user);
+            return token; // login with jwt token
         }
+
+        private string GenerateJwtToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.UTF8.GetBytes(_jwtSecret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId)
+                }),
+                Expires = DateTime.UtcNow.AddHours(1), // set lifecycle for token
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
 
         // Generating Salt 
         public string GenerateSalt()

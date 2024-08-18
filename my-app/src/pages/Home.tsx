@@ -37,7 +37,14 @@ const Home = () => {
 
             if (response.ok) {
                 const responseData = await response.json();
+
+                // Store JWT Token into localStorage (will be replaced by cookies)
+                localStorage.setItem('token', responseData.token);
+
+                // Store userId into localStorage
                 localStorage.setItem('userId', responseData.userId);
+
+                //redirect
                 navigate('/Posting');
             } else {
                 const errorData = await response.json();
